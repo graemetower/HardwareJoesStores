@@ -1,0 +1,9 @@
+kind: ClusterSelector
+apiVersion: configmanagement.gke.io/v1
+metadata:
+  name: selector-locationtype-usa-store
+spec:
+  selector:
+    matchLabels:
+      country: canada
+      loc-type: store

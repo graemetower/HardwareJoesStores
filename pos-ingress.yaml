@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: pos
+  name: gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+    configmanagement.gke.io/cluster-selector: selector-locationtype-usa-store
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /productpage
+        backend:
+          serviceName: productpage
+          servicePort: 8080
+      - path: /static/*
+        backend:
+          serviceName: productpage
+          servicePort: 8080
+      - path: /login
+        backend:
+          serviceName: productpage
+          servicePort: 8080
+      - path: /logout
+        backend:
+          serviceName: productpage
+          servicePort: 8080
+      - path: /api/v1/products.*
+        backend:
+          serviceName: productpage
+          servicePort: 8080

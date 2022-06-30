@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: pos
+  name: pos
+  labels:
+    app: pos
+    service: pos
+  annotations:
+    configmanagement.gke.io/cluster-selector: selector-locationtype-usa-store
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: pos
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: pos
+  name: joespos-sa
+  labels:
+    account: pos
+  annotations:
+    configmanagement.gke.io/cluster-selector: selector-locationtype-usa-store
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: pos
+  name: pos-v1
+  labels:
+    app: pos
+    version: v1
+  annotations:
+    configmanagement.gke.io/cluster-selector: selector-locationtype-usa-store
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pos
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: pos
+        version: v1
+    spec:
+      serviceAccountName: joespos-sa
+      containers:
+      - name: pos
+        image: gcr.io/hwjoes-shared/joespos-v1:1.16.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
